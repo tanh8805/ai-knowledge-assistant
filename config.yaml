@@ -13,6 +13,7 @@ llm:
 
 embedding:
   provider: gemini  # overridden by EMBEDDING_PROVIDER in .env
+  # Must match EMBEDDING_DIMENSION in app/db/models.py (the database column size).
   dimension: 768
   models:
     openai: text-embedding-3-small
