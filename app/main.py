@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
-from app.api.routes import documents, health
+from app.api.routes import chat, documents, health
 from app.core.config import MissingAPIKeyError, get_settings
 from app.core.logging import setup_logging
 
@@ -11,6 +11,7 @@ setup_logging(settings.app.log_level)
 app = FastAPI(title=settings.app.name)
 app.include_router(health.router)
 app.include_router(documents.router)
+app.include_router(chat.router)
 
 
 @app.exception_handler(MissingAPIKeyError)

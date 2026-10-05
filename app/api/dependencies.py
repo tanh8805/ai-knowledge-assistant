@@ -13,9 +13,18 @@ from app.core.config import get_settings
 from app.db.database import create_session_factory
 from app.embeddings.base import EmbeddingClient
 from app.embeddings.factory import create_embedding_client
+from app.llm.base import LLMClient
+from app.llm.factory import create_llm_client
 from app.rag.ingestion import DocumentIngestor
+from app.rag.pipeline import RAGPipeline
+from app.rag.retriever import Retriever
 from app.vectorstore.base import VectorStore
 from app.vectorstore.postgres import PostgresVectorStore
+
+
+@lru_cache
+def get_llm_client() -> LLMClient:
+    return create_llm_client(get_settings())
 
 
 @lru_cache
@@ -34,3 +43,17 @@ def get_ingestor(
 ) -> DocumentIngestor:
     rag = get_settings().rag
     return DocumentIngestor(embedding, vector_store, rag.chunk_size, rag.chunk_overlap)
+
+
+def get_retriever(
+    embedding: Annotated[EmbeddingClient, Depends(get_embedding_client)],
+    vector_store: Annotated[VectorStore, Depends(get_vector_store)],
+) -> Retriever:
+    return Retriever(embedding, vector_store, get_settings().rag.top_k)
+
+
+def get_rag_pipeline(
+    llm: Annotated[LLMClient, Depends(get_llm_client)],
+    retriever: Annotated[Retriever, Depends(get_retriever)],
+) -> RAGPipeline:
+    return RAGPipeline(llm, retriever)
