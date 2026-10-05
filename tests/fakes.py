@@ -1,5 +1,8 @@
 """In-memory test doubles for the provider abstractions. Never used by the application."""
 
+import zlib
+
+from app.embeddings.base import EmbeddingClient
 from app.llm.base import LLMClient, LLMResponse, Message, ToolSpec
 
 FAKE_MODEL = "fake-model"
@@ -23,3 +26,16 @@ class FakeLLMClient(LLMClient):
         if isinstance(response, str):
             return LLMResponse(content=response, model=FAKE_MODEL)
         return response
+
+
+class FakeEmbeddingClient(EmbeddingClient):
+    """Deterministic bag-of-words embedding: texts sharing words get similar vectors."""
+
+    def embed(self, texts: list[str]) -> list[list[float]]:
+        return [self._embed_one(text) for text in texts]
+
+    def _embed_one(self, text: str) -> list[float]:
+        vector = [0.0] * self.dimension
+        for word in text.lower().split():
+            vector[zlib.crc32(word.encode()) % self.dimension] += 1.0
+        return vector
