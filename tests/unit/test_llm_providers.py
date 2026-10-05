@@ -5,7 +5,7 @@ from google.genai import types
 from openai.types.chat import ChatCompletion
 from pydantic import SecretStr
 
-from app.core.config import get_settings
+from app.core.config import MissingAPIKeyError, get_settings
 from app.llm.base import Message, ToolCall
 from app.llm.factory import create_llm_client
 from app.llm.gemini import GeminiClient, parse_response, to_gemini_contents
@@ -130,5 +130,5 @@ def test_factory_requires_api_key() -> None:
     settings.llm.provider = "openai"
     settings.openai_api_key = None
 
-    with pytest.raises(ValueError, match="OPENAI_API_KEY"):
+    with pytest.raises(MissingAPIKeyError, match="OPENAI_API_KEY"):
         create_llm_client(settings)

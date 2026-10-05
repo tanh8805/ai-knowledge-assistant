@@ -11,6 +11,10 @@ CONFIG_PATH = Path(__file__).resolve().parents[2] / "config.yaml"
 Provider = Literal["openai", "gemini"]
 
 
+class MissingAPIKeyError(RuntimeError):
+    """The selected provider has no API key configured."""
+
+
 class AppConfig(BaseModel):
     name: str
     environment: str
@@ -72,7 +76,7 @@ class Settings(BaseModel):
     def api_key_for(self, provider: Provider) -> str:
         key = self.openai_api_key if provider == "openai" else self.gemini_api_key
         if key is None or not key.get_secret_value():
-            raise ValueError(f"{provider.upper()}_API_KEY is not set")
+            raise MissingAPIKeyError(f"{provider.upper()}_API_KEY is not set")
         return key.get_secret_value()
 
 
