@@ -1,0 +1,17 @@
+Retrieval-Augmented Generation (RAG) combines a search step with a language model.
+
+First, documents are split into chunks and each chunk is turned into an embedding:
+a list of numbers that represents its meaning. The embeddings are stored in a
+vector database.
+
+When a user asks a question, the question is embedded with the same model. The
+vector database returns the chunks whose embeddings are closest to the question
+embedding, usually measured with cosine similarity.
+
+Finally, the retrieved chunks are placed in the prompt as context, and the language
+model writes an answer based on them. Because the answer is grounded in retrieved
+text, the system can cite its sources and is less likely to invent facts.
+
+Chunk size matters. Chunks that are too small lose context; chunks that are too large
+dilute the relevant part and use more of the model's context window. Overlapping
+chunks help when an important sentence crosses a chunk boundary.
