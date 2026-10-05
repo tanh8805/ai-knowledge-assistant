@@ -24,11 +24,23 @@ class RetrieveResponse(BaseModel):
     results: list[Source]
 
 
+ChatMode = Literal["rag", "agent", "multi_agent"]
+
+
 class ChatRequest(BaseModel):
     message: str = Field(min_length=1)
-    mode: Literal["rag"] = "rag"
+    mode: ChatMode = Field(
+        default="rag",
+        description=(
+            "rag: retrieve then answer. "
+            "agent: one agent that chooses its own tools. "
+            "multi_agent: a supervisor routes to a specialized agent."
+        ),
+    )
 
 
 class ChatResponse(BaseModel):
     answer: str
-    sources: list[Source] = []
+    mode: ChatMode
+    sources: list[Source] = Field(default=[], description="Chunks used (rag mode only).")
+    agent: str | None = Field(default=None, description="Agent that produced the answer.")

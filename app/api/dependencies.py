@@ -9,6 +9,11 @@ from typing import Annotated
 
 from fastapi import Depends
 
+from app.agents.assistant_agent import AssistantAgent
+from app.agents.general_agent import GeneralAgent
+from app.agents.rag_agent import RAGAgent
+from app.agents.summarizer_agent import SummarizerAgent
+from app.agents.supervisor import Supervisor
 from app.core.config import get_settings
 from app.db.database import create_session_factory
 from app.embeddings.base import EmbeddingClient
@@ -57,3 +62,23 @@ def get_rag_pipeline(
     retriever: Annotated[Retriever, Depends(get_retriever)],
 ) -> RAGPipeline:
     return RAGPipeline(llm, retriever)
+
+
+def get_assistant_agent(
+    llm: Annotated[LLMClient, Depends(get_llm_client)],
+    retriever: Annotated[Retriever, Depends(get_retriever)],
+) -> AssistantAgent:
+    return AssistantAgent(llm, retriever, get_settings().agent.max_steps)
+
+
+def get_supervisor(
+    llm: Annotated[LLMClient, Depends(get_llm_client)],
+    retriever: Annotated[Retriever, Depends(get_retriever)],
+) -> Supervisor:
+    max_steps = get_settings().agent.max_steps
+    agents = [
+        RAGAgent(llm, retriever, max_steps),
+        GeneralAgent(llm, max_steps),
+        SummarizerAgent(llm),
+    ]
+    return Supervisor(llm, {agent.name: agent for agent in agents}, default_agent=GeneralAgent.name)
