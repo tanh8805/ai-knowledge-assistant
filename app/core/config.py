@@ -69,6 +69,12 @@ class Settings(BaseModel):
     gemini_api_key: SecretStr | None
     database_url: str
 
+    def api_key_for(self, provider: Provider) -> str:
+        key = self.openai_api_key if provider == "openai" else self.gemini_api_key
+        if key is None or not key.get_secret_value():
+            raise ValueError(f"{provider.upper()}_API_KEY is not set")
+        return key.get_secret_value()
+
 
 def load_settings(config_path: Path = CONFIG_PATH) -> Settings:
     """Merge config.yaml with environment values. Environment values win."""
