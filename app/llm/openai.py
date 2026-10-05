@@ -13,9 +13,7 @@ class OpenAIClient(LLMClient):
         self._model = model
         self._temperature = temperature
 
-    def generate(
-        self, messages: list[Message], tools: list[ToolSpec] | None = None
-    ) -> LLMResponse:
+    def generate(self, messages: list[Message], tools: list[ToolSpec] | None = None) -> LLMResponse:
         optional: dict[str, Any] = {}
         if tools:
             optional["tools"] = [to_openai_tool(tool) for tool in tools]

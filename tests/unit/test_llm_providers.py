@@ -110,12 +110,16 @@ def test_gemini_response_keeps_thought_signature() -> None:
     parsed = parse_response(response, model="gemini-test")
 
     assert parsed.tool_calls == (
-        ToolCall(id="call_1", name="calculator", arguments={"expression": "2 * 3"}, signature=b"sig"),
+        ToolCall(
+            id="call_1", name="calculator", arguments={"expression": "2 * 3"}, signature=b"sig"
+        ),
     )
     assert parsed.usage.output_tokens == 3
 
 
-@pytest.mark.parametrize(("provider", "expected"), [("openai", OpenAIClient), ("gemini", GeminiClient)])
+@pytest.mark.parametrize(
+    ("provider", "expected"), [("openai", OpenAIClient), ("gemini", GeminiClient)]
+)
 def test_factory_builds_selected_provider(provider: str, expected: type) -> None:
     settings = get_settings().model_copy(deep=True)
     settings.llm.provider = provider

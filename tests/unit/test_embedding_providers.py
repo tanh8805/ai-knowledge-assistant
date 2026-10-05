@@ -50,7 +50,9 @@ def test_gemini_embeddings_are_requested_in_batches(monkeypatch: pytest.MonkeyPa
     def embed_content(**kwargs: Any) -> types.EmbedContentResponse:
         batches.append(kwargs["contents"])
         return types.EmbedContentResponse(
-            embeddings=[types.ContentEmbedding(values=[1.0] * DIMENSION) for _ in kwargs["contents"]]
+            embeddings=[
+                types.ContentEmbedding(values=[1.0] * DIMENSION) for _ in kwargs["contents"]
+            ]
         )
 
     monkeypatch.setattr(client._client.models, "embed_content", embed_content)
@@ -75,4 +77,3 @@ def test_factory_builds_selected_provider(provider: str, expected: type) -> None
 
     assert isinstance(client, expected)
     assert client.dimension == settings.embedding.dimension
-

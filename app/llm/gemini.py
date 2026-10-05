@@ -10,9 +10,7 @@ class GeminiClient(LLMClient):
         self._model = model
         self._temperature = temperature
 
-    def generate(
-        self, messages: list[Message], tools: list[ToolSpec] | None = None
-    ) -> LLMResponse:
+    def generate(self, messages: list[Message], tools: list[ToolSpec] | None = None) -> LLMResponse:
         system_instruction = "\n\n".join(m.content for m in messages if m.role == "system")
         config = types.GenerateContentConfig(
             system_instruction=system_instruction or None,
@@ -58,7 +56,9 @@ def to_gemini_contents(messages: list[Message]) -> list[types.Content]:
                 name=message.tool_name,
                 response={"result": message.content},
             )
-            contents.append(types.Content(role="user", parts=[types.Part(function_response=response)]))
+            contents.append(
+                types.Content(role="user", parts=[types.Part(function_response=response)])
+            )
     return contents
 
 

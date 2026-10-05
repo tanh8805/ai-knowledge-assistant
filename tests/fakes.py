@@ -15,9 +15,7 @@ class FakeLLMClient(LLMClient):
         self._responses = list(responses or [])
         self.calls: list[tuple[list[Message], list[ToolSpec]]] = []
 
-    def generate(
-        self, messages: list[Message], tools: list[ToolSpec] | None = None
-    ) -> LLMResponse:
+    def generate(self, messages: list[Message], tools: list[ToolSpec] | None = None) -> LLMResponse:
         self.calls.append((list(messages), list(tools or [])))
         if not self._responses:
             return LLMResponse(content="fake answer", model=FAKE_MODEL)

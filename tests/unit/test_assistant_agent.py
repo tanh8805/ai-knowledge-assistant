@@ -24,7 +24,9 @@ def test_assistant_can_combine_search_and_calculator() -> None:
             LLMResponse(
                 content="",
                 model="fake",
-                tool_calls=(ToolCall(id="2", name="calculator", arguments={"expression": "12 * 3"}),),
+                tool_calls=(
+                    ToolCall(id="2", name="calculator", arguments={"expression": "12 * 3"}),
+                ),
             ),
             "Three tickets cost 36 USD [1].",
         ]

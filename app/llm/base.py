@@ -56,7 +56,5 @@ class LLMClient(ABC):
     """Provider-independent chat model. Business logic depends only on this class."""
 
     @abstractmethod
-    def generate(
-        self, messages: list[Message], tools: list[ToolSpec] | None = None
-    ) -> LLMResponse:
+    def generate(self, messages: list[Message], tools: list[ToolSpec] | None = None) -> LLMResponse:
         """Send the conversation (and optional tools) to the model and return its reply."""

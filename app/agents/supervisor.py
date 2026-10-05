@@ -63,7 +63,9 @@ class Supervisor:
         ]
         choice = self._llm.generate(messages).content.strip().strip("`'\".").lower()
         if choice not in self._agents:
-            logger.warning("Supervisor chose unknown agent %r, using %s", choice, self._default_agent)
+            logger.warning(
+                "Supervisor chose unknown agent %r, using %s", choice, self._default_agent
+            )
             return self._default_agent
         return choice
 

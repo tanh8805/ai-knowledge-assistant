@@ -29,7 +29,9 @@ class UppercaseAgent(ToolCallingAgent):
 
 def tool_call(name: str = "uppercase", **arguments: Any) -> LLMResponse:
     return LLMResponse(
-        content="", model="fake", tool_calls=(ToolCall(id="call_1", name=name, arguments=arguments),)
+        content="",
+        model="fake",
+        tool_calls=(ToolCall(id="call_1", name=name, arguments=arguments),),
     )
 
 
