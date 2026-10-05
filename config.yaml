@@ -1,0 +1,27 @@
+# Non-secret configuration. Secrets and environment-specific values live in .env.
+app:
+  name: ai-knowledge-assistant
+  environment: development
+  log_level: INFO
+
+llm:
+  provider: gemini  # overridden by LLM_PROVIDER in .env
+  temperature: 0.2
+  models:
+    openai: gpt-4.1-mini
+    gemini: gemini-2.5-flash
+
+embedding:
+  provider: gemini  # overridden by EMBEDDING_PROVIDER in .env
+  dimension: 768
+  models:
+    openai: text-embedding-3-small
+    gemini: gemini-embedding-001
+
+rag:
+  chunk_size: 500
+  chunk_overlap: 50
+  top_k: 5
+
+agent:
+  max_steps: 5
